@@ -12,7 +12,10 @@ PR219=296e47dc1d49b8f8be940dd915a24efc2a7b091d
 if [ ! -d microimpute/.git ]; then
   git clone --quiet https://github.com/PolicyEngine/microimpute.git microimpute
 fi
-git -C microimpute fetch --quiet origin "$MAIN" "$PR219"
+if ! git -C microimpute cat-file -e "$MAIN^{commit}" 2>/dev/null \
+   || ! git -C microimpute cat-file -e "$PR219^{commit}" 2>/dev/null; then
+  git -C microimpute fetch --quiet origin "$MAIN" "$PR219"
+fi
 git -C microimpute checkout --quiet --detach "$MAIN"
 if [ ! -e microimpute-pr219 ]; then
   git -C microimpute worktree add --quiet --detach "$PWD/microimpute-pr219" "$PR219"
@@ -20,7 +23,8 @@ fi
 test "$(git -C microimpute rev-parse HEAD)" = "$MAIN"
 test "$(git -C microimpute-pr219 rev-parse HEAD)" = "$PR219"
 
-uv venv --quiet --python 3.13 .venv
-uv pip install --quiet --python .venv/bin/python -r requirements.lock.txt
+# Reruns keep the venv and sync it to the lock exactly.
+uv venv --quiet --allow-existing --python 3.13 .venv
+uv pip sync --quiet --python .venv/bin/python requirements.lock.txt
 uv pip install --quiet --python .venv/bin/python --no-deps -e ./microimpute
 echo "setup done: .venv, microimpute@${MAIN:0:7}, microimpute-pr219@${PR219:0:7}"
