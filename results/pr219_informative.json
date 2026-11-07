@@ -1,0 +1,584 @@
+[
+ {
+  "unweighted": {
+   "realized": {
+    "total": 2481800867.667833,
+    "share_zero": 0.03371030570773556,
+    "median": 3509.993257869006,
+    "p75": 8596.572920075861,
+    "p90": 18888.80806390514,
+    "p95": 30164.296680217627,
+    "p99": 73558.34202920922,
+    "total_sd": 100060624.06556907,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1000
+   },
+   "forest_mean": 2482802517.515133,
+   "expected": 2477707095.3483515,
+   "expected_levels": 4000,
+   "grid_check": {
+    "rows": 1000,
+    "levels_coarse": 4000,
+    "levels_fine": 16000,
+    "rel_diff_total": -3.285601269498173e-06
+   },
+   "pool_size": {
+    "mean": 4284.140455585398,
+    "median": 4284.0,
+    "p10": 4141.0
+   }
+  },
+  "weighted": {
+   "realized": {
+    "total": 2545902525.1359816,
+    "share_zero": 0.03375350293135493,
+    "median": 3596.003961957508,
+    "p75": 8727.435252035817,
+    "p90": 19115.42802476448,
+    "p95": 30438.377020300995,
+    "p99": 76128.06695847299,
+    "total_sd": 129465770.77131438,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1000
+   },
+   "forest_mean": 2520607974.0839376,
+   "expected": 2520607974.0839376
+  },
+  "truth": {
+   "conditional_mean_total": 2586138599.0065804,
+   "realized_stats": {
+    "total": 2609764860.795931,
+    "share_zero": 0.028328640645879415,
+    "median": 3553.659109610292,
+    "p75": 8646.985355039415,
+    "p90": 19177.185510273936,
+    "p95": 31452.614608281045,
+    "p99": 80562.86976812298,
+    "total_sd": 0.0,
+    "n_draws": 1
+   }
+  },
+  "rep": 0,
+  "design": "informative"
+ },
+ {
+  "unweighted": {
+   "realized": {
+    "total": 2560471217.4384637,
+    "share_zero": 0.03370299812554932,
+    "median": 3512.3266245035716,
+    "p75": 8634.53128217171,
+    "p90": 19496.765618197656,
+    "p95": 31266.198473328415,
+    "p99": 76569.05441603194,
+    "total_sd": 74845847.01191877,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1001
+   },
+   "forest_mean": 2538773310.73405,
+   "expected": 2533331831.3861947,
+   "expected_levels": 4000,
+   "pool_size": {
+    "mean": 4272.062412342216,
+    "median": 4272.0,
+    "p10": 4130.0
+   }
+  },
+  "weighted": {
+   "realized": {
+    "total": 2616425304.9915886,
+    "share_zero": 0.03362425725566423,
+    "median": 3584.612677128639,
+    "p75": 8794.711173282061,
+    "p90": 19841.83301309778,
+    "p95": 31880.61887393411,
+    "p99": 79844.72803330504,
+    "total_sd": 76053938.47946072,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1001
+   },
+   "forest_mean": 2580503332.4654436,
+   "expected": 2580503332.4654436
+  },
+  "truth": {
+   "conditional_mean_total": 2579923036.4293423,
+   "realized_stats": {
+    "total": 2469796819.0560145,
+    "share_zero": 0.031321197580155224,
+    "median": 3527.4494450168672,
+    "p75": 8348.330691396419,
+    "p90": 19608.002534765474,
+    "p95": 32743.647264601463,
+    "p99": 67212.13451278752,
+    "total_sd": 0.0,
+    "n_draws": 1
+   }
+  },
+  "rep": 1,
+  "design": "informative"
+ },
+ {
+  "unweighted": {
+   "realized": {
+    "total": 2467603660.142786,
+    "share_zero": 0.031861706379953295,
+    "median": 3521.347170985054,
+    "p75": 8437.3712509264,
+    "p90": 18647.699178010378,
+    "p95": 30389.475979345134,
+    "p99": 72574.09293936178,
+    "total_sd": 63736921.58090289,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1002
+   },
+   "forest_mean": 2530435625.9129324,
+   "expected": 2525062401.2953615,
+   "expected_levels": 4000,
+   "pool_size": {
+    "mean": 4278.729657493565,
+    "median": 4277.0,
+    "p10": 4134.0
+   }
+  },
+  "weighted": {
+   "realized": {
+    "total": 2519120818.247446,
+    "share_zero": 0.03184135180645653,
+    "median": 3583.415135337131,
+    "p75": 8607.945444469657,
+    "p90": 19054.55498218972,
+    "p95": 30830.12717079536,
+    "p99": 73778.16031221792,
+    "total_sd": 60681013.75032867,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1002
+   },
+   "forest_mean": 2567887635.566584,
+   "expected": 2567887635.566584
+  },
+  "truth": {
+   "conditional_mean_total": 2572446086.8485065,
+   "realized_stats": {
+    "total": 2512594267.6307936,
+    "share_zero": 0.03292339790384153,
+    "median": 3629.9115691093866,
+    "p75": 8514.405979838128,
+    "p90": 19159.4162048927,
+    "p95": 31636.391371336533,
+    "p99": 75204.173133291,
+    "total_sd": 0.0,
+    "n_draws": 1
+   }
+  },
+  "rep": 2,
+  "design": "informative"
+ },
+ {
+  "unweighted": {
+   "realized": {
+    "total": 2354193986.2877474,
+    "share_zero": 0.03545701894688261,
+    "median": 3431.7565661233793,
+    "p75": 8220.08239159086,
+    "p90": 17715.182337485494,
+    "p95": 28418.86623217439,
+    "p99": 70869.96607276516,
+    "total_sd": 62393520.0307304,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1003
+   },
+   "forest_mean": 2407580219.0858374,
+   "expected": 2401301114.08216,
+   "expected_levels": 4000,
+   "pool_size": {
+    "mean": 4275.860909090909,
+    "median": 4276.0,
+    "p10": 4132.0
+   }
+  },
+  "weighted": {
+   "realized": {
+    "total": 2401313355.804894,
+    "share_zero": 0.035299862460865916,
+    "median": 3516.296817260108,
+    "p75": 8390.293248171434,
+    "p90": 17964.328133369658,
+    "p95": 28837.72448858621,
+    "p99": 72291.52427880166,
+    "total_sd": 72866057.2743182,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1003
+   },
+   "forest_mean": 2447033375.556281,
+   "expected": 2447033375.556281
+  },
+  "truth": {
+   "conditional_mean_total": 2469238929.334373,
+   "realized_stats": {
+    "total": 2373020431.539672,
+    "share_zero": 0.032580768023423246,
+    "median": 3563.342389093,
+    "p75": 8372.065379201922,
+    "p90": 18952.492605418964,
+    "p95": 30389.398230599465,
+    "p99": 71602.08858608388,
+    "total_sd": 0.0,
+    "n_draws": 1
+   }
+  },
+  "rep": 3,
+  "design": "informative"
+ },
+ {
+  "unweighted": {
+   "realized": {
+    "total": 2552192467.52487,
+    "share_zero": 0.03459427310792623,
+    "median": 3512.0426575062643,
+    "p75": 8457.921715716526,
+    "p90": 18694.368440449885,
+    "p95": 30615.844637440743,
+    "p99": 75590.77523046955,
+    "total_sd": 78583678.79097642,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1004
+   },
+   "forest_mean": 2566109990.3130264,
+   "expected": 2559797570.93431,
+   "expected_levels": 4000,
+   "pool_size": {
+    "mean": 4273.808445106806,
+    "median": 4274.0,
+    "p10": 4129.0
+   }
+  },
+  "weighted": {
+   "realized": {
+    "total": 2590654550.2261467,
+    "share_zero": 0.034506428277042596,
+    "median": 3589.4302470425073,
+    "p75": 8615.981784007838,
+    "p90": 19116.43044073963,
+    "p95": 31092.087335997836,
+    "p99": 75722.53313600626,
+    "total_sd": 81042061.52398176,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1004
+   },
+   "forest_mean": 2603220556.679654,
+   "expected": 2603220556.679654
+  },
+  "truth": {
+   "conditional_mean_total": 2547674501.2100296,
+   "realized_stats": {
+    "total": 2414695864.1462536,
+    "share_zero": 0.031230055859141792,
+    "median": 3551.673547426665,
+    "p75": 8438.702953238051,
+    "p90": 18027.52398318353,
+    "p95": 28702.344365200806,
+    "p99": 69498.27407816012,
+    "total_sd": 0.0,
+    "n_draws": 1
+   }
+  },
+  "rep": 4,
+  "design": "informative"
+ },
+ {
+  "unweighted": {
+   "realized": {
+    "total": 2500121708.6158104,
+    "share_zero": 0.03225703767014624,
+    "median": 3523.1233734753273,
+    "p75": 8289.062630237222,
+    "p90": 18605.21262637816,
+    "p95": 30750.973648729036,
+    "p99": 80451.61459589774,
+    "total_sd": 91067164.66309108,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1005
+   },
+   "forest_mean": 2522643668.7506843,
+   "expected": 2516079441.892479,
+   "expected_levels": 4000,
+   "pool_size": {
+    "mean": 4277.366377571601,
+    "median": 4277.0,
+    "p10": 4134.0
+   }
+  },
+  "weighted": {
+   "realized": {
+    "total": 2562440786.0177193,
+    "share_zero": 0.032010831886805466,
+    "median": 3574.371191372492,
+    "p75": 8421.653173694995,
+    "p90": 18886.04246702519,
+    "p95": 31255.002781666633,
+    "p99": 82389.3512772581,
+    "total_sd": 104826229.25743681,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1005
+   },
+   "forest_mean": 2570761339.5134983,
+   "expected": 2570761339.5134983
+  },
+  "truth": {
+   "conditional_mean_total": 2513255524.06748,
+   "realized_stats": {
+    "total": 2484850975.094563,
+    "share_zero": 0.034377918513371006,
+    "median": 3456.7842894085875,
+    "p75": 8290.364865260033,
+    "p90": 18895.66839787053,
+    "p95": 30289.43592839007,
+    "p99": 76172.35604183853,
+    "total_sd": 0.0,
+    "n_draws": 1
+   }
+  },
+  "rep": 5,
+  "design": "informative"
+ },
+ {
+  "unweighted": {
+   "realized": {
+    "total": 2441377923.206722,
+    "share_zero": 0.033958006338423746,
+    "median": 3463.6548552696527,
+    "p75": 8204.991888356994,
+    "p90": 18067.85123980926,
+    "p95": 29067.983887285074,
+    "p99": 75265.86370991381,
+    "total_sd": 71957205.35149395,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1006
+   },
+   "forest_mean": 2455821638.760788,
+   "expected": 2450485947.7217865,
+   "expected_levels": 4000,
+   "pool_size": {
+    "mean": 4274.506872852234,
+    "median": 4274.0,
+    "p10": 4132.0
+   }
+  },
+  "weighted": {
+   "realized": {
+    "total": 2492803720.552813,
+    "share_zero": 0.03449822399541702,
+    "median": 3545.832225126824,
+    "p75": 8350.256550783379,
+    "p90": 18480.72192436257,
+    "p95": 29498.973732758623,
+    "p99": 77710.61419190941,
+    "total_sd": 71380390.6312163,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1006
+   },
+   "forest_mean": 2503740713.057189,
+   "expected": 2503740713.057189
+  },
+  "truth": {
+   "conditional_mean_total": 2522725835.4182944,
+   "realized_stats": {
+    "total": 2424379039.8237505,
+    "share_zero": 0.037497479524383245,
+    "median": 3652.7434341625667,
+    "p75": 8188.178928610372,
+    "p90": 18090.257195459613,
+    "p95": 30024.418314050617,
+    "p99": 76578.00269850365,
+    "total_sd": 0.0,
+    "n_draws": 1
+   }
+  },
+  "rep": 6,
+  "design": "informative"
+ },
+ {
+  "unweighted": {
+   "realized": {
+    "total": 2454044065.5015454,
+    "share_zero": 0.03276603007603549,
+    "median": 3548.1249579143923,
+    "p75": 8447.556550830452,
+    "p90": 18747.745323618437,
+    "p95": 29431.656243166228,
+    "p99": 76229.10340589823,
+    "total_sd": 59235234.27989128,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1007
+   },
+   "forest_mean": 2454183697.7111444,
+   "expected": 2449408307.8582106,
+   "expected_levels": 4000,
+   "pool_size": {
+    "mean": 4275.810208770353,
+    "median": 4276.0,
+    "p10": 4133.0
+   }
+  },
+  "weighted": {
+   "realized": {
+    "total": 2503042588.4974895,
+    "share_zero": 0.03281157347149091,
+    "median": 3632.297087332898,
+    "p75": 8660.804058764652,
+    "p90": 19097.25094538079,
+    "p95": 30005.393876718706,
+    "p99": 77142.849707861,
+    "total_sd": 64179916.43866617,
+    "n_draws": 10
+   },
+   "forest_params": {
+    "n_estimators": 100,
+    "min_samples_leaf": 20,
+    "max_samples_leaf": null,
+    "max_features": 1.0,
+    "max_depth": null,
+    "bootstrap": true,
+    "random_state": 1007
+   },
+   "forest_mean": 2499597480.0417957,
+   "expected": 2499597480.0417957
+  },
+  "truth": {
+   "conditional_mean_total": 2496884568.5520315,
+   "realized_stats": {
+    "total": 2371955850.1838017,
+    "share_zero": 0.03236909382759365,
+    "median": 3530.0689957376067,
+    "p75": 8319.985432756937,
+    "p90": 17716.552013697015,
+    "p95": 28060.030166891625,
+    "p99": 72044.38625581888,
+    "total_sd": 0.0,
+    "n_draws": 1
+   }
+  },
+  "rep": 7,
+  "design": "informative"
+ }
+]

@@ -1,0 +1,77 @@
+[
+ {
+  "own_gate_pool_mean": 169662315613.61008,
+  "gate_positive_share": 0.9368793255821641,
+  "n_positive_donors": 41725,
+  "totals": {
+   "ahalf/tree": 168979309375.34753,
+   "ahalf/pooled": 167796463806.99713,
+   "honest/tree": 171025474895.25085,
+   "honest/pooled": 170909947936.1087
+  },
+  "cps_json_pool_mean_total": 169662315613.61005,
+  "reproduces_cps_json_rel_diff": 2.220446049250313e-16,
+  "reported_total": 168061965810.06998,
+  "fold": 0
+ },
+ {
+  "own_gate_pool_mean": 173018246008.6233,
+  "gate_positive_share": 0.935772643551394,
+  "n_positive_donors": 41691,
+  "totals": {
+   "ahalf/tree": 171140791277.39734,
+   "ahalf/pooled": 171063644633.61188,
+   "honest/tree": 170179114090.89377,
+   "honest/pooled": 169725508337.76257
+  },
+  "cps_json_pool_mean_total": 173018246008.6233,
+  "reproduces_cps_json_rel_diff": 0.0,
+  "reported_total": 171979611555.52,
+  "fold": 1
+ },
+ {
+  "own_gate_pool_mean": 166830185231.58032,
+  "gate_positive_share": 0.9374518795037291,
+  "n_positive_donors": 41741,
+  "totals": {
+   "ahalf/tree": 171924623284.66827,
+   "ahalf/pooled": 170338174287.19104,
+   "honest/tree": 171074812354.28973,
+   "honest/pooled": 170792650043.40692
+  },
+  "cps_json_pool_mean_total": 166830185231.5803,
+  "reproduces_cps_json_rel_diff": 2.220446049250313e-16,
+  "reported_total": 169734934400.9,
+  "fold": 2
+ },
+ {
+  "own_gate_pool_mean": 172687344560.2743,
+  "gate_positive_share": 0.9384659097453885,
+  "n_positive_donors": 41667,
+  "totals": {
+   "ahalf/tree": 169810355939.60583,
+   "ahalf/pooled": 169251763123.00916,
+   "honest/tree": 172607059420.26282,
+   "honest/pooled": 172365814110.09024
+  },
+  "cps_json_pool_mean_total": 172687344560.2743,
+  "reproduces_cps_json_rel_diff": 0.0,
+  "reported_total": 174034599738.69,
+  "fold": 3
+ },
+ {
+  "own_gate_pool_mean": 170438468402.36877,
+  "gate_positive_share": 0.9361317022364658,
+  "n_positive_donors": 41700,
+  "totals": {
+   "ahalf/tree": 172868080858.4177,
+   "ahalf/pooled": 170431190765.47827,
+   "honest/tree": 172768977163.21182,
+   "honest/pooled": 172078978459.0159
+  },
+  "cps_json_pool_mean_total": 170438468402.36877,
+  "reproduces_cps_json_rel_diff": 0.0,
+  "reported_total": 175099699818.25,
+  "fold": 4
+ }
+]

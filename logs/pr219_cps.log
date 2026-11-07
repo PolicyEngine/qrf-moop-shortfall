@@ -1,0 +1,16 @@
+  pr219 unweighted 57s
+  pr219 weighted 77s
+fold 0 done in 134s
+  pr219 unweighted 53s
+  pr219 weighted 74s
+fold 1 done in 127s
+  pr219 unweighted 50s
+  pr219 weighted 70s
+fold 2 done in 120s
+  pr219 unweighted 48s
+  pr219 weighted 92s
+fold 3 done in 140s
+  pr219 unweighted 75s
+  pr219 weighted 107s
+fold 4 done in 182s
+pr219 cps exit 0

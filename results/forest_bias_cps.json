@@ -1,0 +1,107 @@
+[
+ {
+  "totals": {
+   "full/tree": 170200853083.5003,
+   "full/pooled": 166821748529.62378,
+   "ahalf/tree": 170750003472.19638,
+   "ahalf/pooled": 167266135177.96948,
+   "honest/tree": 171664209033.81622,
+   "honest/pooled": 171351698859.21198
+  },
+  "catchment_identity_max_rel_err": 2.220446049250313e-16,
+  "catchment_sum_over_wrec": {
+   "full/tree": 0.9999999999999999,
+   "full/pooled": 0.9999999999999999,
+   "ahalf/tree": 1.0,
+   "ahalf/pooled": 0.9999999999999999,
+   "honest/tree": 0.9999999999999999,
+   "honest/pooled": 0.9999999999999999
+  },
+  "truth": 168061965810.06998,
+  "fold": 0
+ },
+ {
+  "totals": {
+   "full/tree": 170374295711.7683,
+   "full/pooled": 166507202164.90155,
+   "ahalf/tree": 169108332425.82727,
+   "ahalf/pooled": 165392175538.46933,
+   "honest/tree": 170887337722.84216,
+   "honest/pooled": 170966847540.05536
+  },
+  "catchment_identity_max_rel_err": 2.220446049250313e-16,
+  "catchment_sum_over_wrec": {
+   "full/tree": 1.0,
+   "full/pooled": 1.0000000000000002,
+   "ahalf/tree": 1.0,
+   "ahalf/pooled": 1.0,
+   "honest/tree": 1.0,
+   "honest/pooled": 1.0
+  },
+  "truth": 171979611555.52,
+  "fold": 1
+ },
+ {
+  "totals": {
+   "full/tree": 173857956886.94122,
+   "full/pooled": 169871824085.75604,
+   "ahalf/tree": 174179149570.70624,
+   "ahalf/pooled": 169731124011.21436,
+   "honest/tree": 171068288570.20383,
+   "honest/pooled": 170994462861.28064
+  },
+  "catchment_identity_max_rel_err": 2.220446049250313e-16,
+  "catchment_sum_over_wrec": {
+   "full/tree": 1.0,
+   "full/pooled": 1.0,
+   "ahalf/tree": 1.0,
+   "ahalf/pooled": 1.0,
+   "honest/tree": 1.0,
+   "honest/pooled": 1.0
+  },
+  "truth": 169734934400.9,
+  "fold": 2
+ },
+ {
+  "totals": {
+   "full/tree": 171927809367.2671,
+   "full/pooled": 168385243356.6686,
+   "ahalf/tree": 171467664886.03384,
+   "ahalf/pooled": 167564888410.64795,
+   "honest/tree": 172321047074.21887,
+   "honest/pooled": 172073224743.646
+  },
+  "catchment_identity_max_rel_err": 2.220446049250313e-16,
+  "catchment_sum_over_wrec": {
+   "full/tree": 0.9999999999999999,
+   "full/pooled": 1.0,
+   "ahalf/tree": 0.9999999999999999,
+   "ahalf/pooled": 1.0,
+   "honest/tree": 0.9999999999999999,
+   "honest/pooled": 0.9999999999999999
+  },
+  "truth": 174034599738.69,
+  "fold": 3
+ },
+ {
+  "totals": {
+   "full/tree": 171010946907.05466,
+   "full/pooled": 167179828887.05725,
+   "ahalf/tree": 170061720067.21216,
+   "ahalf/pooled": 166313847692.29395,
+   "honest/tree": 173218857644.55237,
+   "honest/pooled": 173495917581.71014
+  },
+  "catchment_identity_max_rel_err": 2.220446049250313e-16,
+  "catchment_sum_over_wrec": {
+   "full/tree": 1.0,
+   "full/pooled": 1.0,
+   "ahalf/tree": 1.0,
+   "ahalf/pooled": 1.0,
+   "honest/tree": 1.0,
+   "honest/pooled": 1.0
+  },
+  "truth": 175099699818.25,
+  "fold": 4
+ }
+]

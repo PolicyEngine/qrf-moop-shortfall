@@ -1,0 +1,52 @@
+55401 units, folds [11076, 11109, 11039, 11095, 11082], reported total $858.9B
+fold 0
+  microimpute fit+draws 16s
+  weighted forests 30s
+  cells for none 14s
+  cells for split 15s
+  cells for boot 17s
+  honest forests 23s
+  microcosm weighted 24s
+  microcosm unweighted 25s
+fold 0 done in 163s
+fold 1
+  microimpute fit+draws 13s
+  weighted forests 29s
+  cells for none 14s
+  cells for split 14s
+  cells for boot 14s
+  honest forests 21s
+  microcosm weighted 18s
+  microcosm unweighted 22s
+fold 1 done in 145s
+fold 2
+  microimpute fit+draws 13s
+  weighted forests 27s
+  cells for none 13s
+  cells for split 13s
+  cells for boot 14s
+  honest forests 21s
+  microcosm weighted 19s
+  microcosm unweighted 23s
+fold 2 done in 142s
+fold 3
+  microimpute fit+draws 14s
+  weighted forests 26s
+  cells for none 15s
+  cells for split 15s
+  cells for boot 15s
+  honest forests 22s
+  microcosm weighted 22s
+  microcosm unweighted 25s
+fold 3 done in 153s
+fold 4
+  microimpute fit+draws 15s
+  weighted forests 30s
+  cells for none 15s
+  cells for split 16s
+  cells for boot 17s
+  honest forests 23s
+  microcosm weighted 22s
+  microcosm unweighted 26s
+fold 4 done in 165s
+cps exit 0

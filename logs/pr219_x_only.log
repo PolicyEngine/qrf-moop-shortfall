@@ -1,0 +1,13 @@
+  pr219 unweighted 42s
+  pr219 weighted 82s
+rep 0 (x_only) done in 124s
+  pr219 unweighted 45s
+  pr219 weighted 99s
+rep 1 (x_only) done in 145s
+  pr219 unweighted 42s
+  pr219 weighted 92s
+rep 2 (x_only) done in 134s
+  pr219 unweighted 44s
+  pr219 weighted 85s
+rep 3 (x_only) done in 129s
+pr219 x_only exit 0

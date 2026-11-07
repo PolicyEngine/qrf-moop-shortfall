@@ -1,0 +1,6 @@
+fold 0 done in 20s; reproduces cps.json to 2.2e-16
+fold 1 done in 20s; reproduces cps.json to 0.0e+00
+fold 2 done in 20s; reproduces cps.json to 2.2e-16
+fold 3 done in 19s; reproduces cps.json to 0.0e+00
+fold 4 done in 19s; reproduces cps.json to 0.0e+00
+mc cps exit 0

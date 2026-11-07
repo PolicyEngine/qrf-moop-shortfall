@@ -1,0 +1,81 @@
+rep 0 (informative)
+  microimpute fit+draws 9s
+  weighted forests 20s
+  cells for none 12s
+  cells for split 13s
+  cells for boot 14s
+  honest forests 14s
+  microcosm weighted 18s
+  microcosm unweighted 21s
+rep 0 done in 123s
+rep 1 (informative)
+  microimpute fit+draws 9s
+  weighted forests 20s
+  cells for none 12s
+  cells for split 13s
+  cells for boot 12s
+  honest forests 13s
+  microcosm weighted 15s
+  microcosm unweighted 19s
+rep 1 done in 115s
+rep 2 (informative)
+  microimpute fit+draws 9s
+  weighted forests 19s
+  cells for none 12s
+  cells for split 13s
+  cells for boot 14s
+  honest forests 15s
+  microcosm weighted 21s
+  microcosm unweighted 24s
+rep 2 done in 127s
+rep 3 (informative)
+  microimpute fit+draws 10s
+  weighted forests 23s
+  cells for none 14s
+  cells for split 15s
+  cells for boot 14s
+  honest forests 14s
+  microcosm weighted 17s
+  microcosm unweighted 19s
+rep 3 done in 125s
+rep 4 (informative)
+  microimpute fit+draws 9s
+  weighted forests 20s
+  cells for none 13s
+  cells for split 14s
+  cells for boot 14s
+  honest forests 14s
+  microcosm weighted 16s
+  microcosm unweighted 18s
+rep 4 done in 117s
+rep 5 (informative)
+  microimpute fit+draws 9s
+  weighted forests 20s
+  cells for none 12s
+  cells for split 12s
+  cells for boot 13s
+  honest forests 14s
+  microcosm weighted 15s
+  microcosm unweighted 17s
+rep 5 done in 113s
+rep 6 (informative)
+  microimpute fit+draws 9s
+  weighted forests 20s
+  cells for none 11s
+  cells for split 12s
+  cells for boot 12s
+  honest forests 13s
+  microcosm weighted 14s
+  microcosm unweighted 17s
+rep 6 done in 108s
+rep 7 (informative)
+  microimpute fit+draws 9s
+  weighted forests 20s
+  cells for none 13s
+  cells for split 18s
+  cells for boot 16s
+  honest forests 16s
+  microcosm weighted 28s
+  microcosm unweighted 36s
+rep 7 done in 156s
+synth informative exit 0

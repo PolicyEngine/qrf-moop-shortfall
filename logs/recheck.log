@@ -1,0 +1,52 @@
+{
+ "purity": {
+  "share_leaves_impure": 0.0001962965630561658,
+  "share_inbag_mass_in_impure_leaves": 0.0003918781725888325,
+  "mean_count_zero_leaf": 2.8366783140423673,
+  "mean_count_positive_leaf": 1.612308392570591,
+  "share_leaves_zero": 0.034176500465178075,
+  "recipient_zero_mass_per_tree": 0.06873309704906275,
+  "recipient_zero_mass_count_pooled": 0.12142690047405026,
+  "donor_zero_share_weighted": 0.06334835351393052,
+  "recipient_reported_zero_share": 0.06649633964504087
+ },
+ "base_meinshausen_rel_diff_vs_cps_json": 0.0,
+ "boot/leaf1/type7_knots": {
+  "exact": 168373889870.64093,
+  "realized_mean": 168235414032.8493,
+  "z": -1.2647849382856755,
+  "sd_all": 2189713580.5446887,
+  "sd_first10": 2164780438.8768406,
+  "skew": 0.3070554936168293,
+  "n_draws": 400,
+  "exact_rel_diff_vs_cps_json": 0.0,
+  "cps_json_10draw_z": -4.16983022187535
+ }
+}
+{
+ "split/leaf1/type1_grid": {
+  "exact": 167821257432.12695,
+  "realized_mean": 167786132143.43243,
+  "z": -0.2532460076534697,
+  "sd_all": 2774005325.4922686,
+  "sd_first10": 3723973568.1900544,
+  "skew": 0.4227377249688855,
+  "n_draws": 400,
+  "exact_rel_diff_vs_cps_json": 0.0,
+  "cps_json_10draw_z": -3.5356740727798215
+ }
+}
+{
+ "boot/leafall/type7_grid": {
+  "exact": 164691947548.0764,
+  "realized_mean": 164803900384.5448,
+  "z": 0.859311473400398,
+  "sd_all": 2605640444.329309,
+  "sd_first10": 2266414360.7866445,
+  "skew": 0.5253486507216455,
+  "n_draws": 400,
+  "exact_rel_diff_vs_cps_json": 0.0,
+  "cps_json_10draw_z": -5.843966307424034
+ }
+}
+recheck exit 0

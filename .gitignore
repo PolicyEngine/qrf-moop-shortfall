@@ -1,0 +1,23 @@
+# Track only the analysis. Local environments, clones, downloaded data and
+# working notes stay out of git.
+/*
+!/.gitignore
+!/LICENSE
+!/README.md
+!/REPORT.md
+!/requirements.lock.txt
+!/harness/
+!/logs/
+!/results/
+!/scripts/
+
+# Record-level CPS inputs; harness/export_cps.py rebuilds them.
+/results/cps_inputs.npz
+
+# One-off local scripts outside the documented pipeline.
+/harness/run_forest_bias.sh
+/harness/diag_forest_bias.py
+
+__pycache__/
+.hypothesis/
+.pytest_cache/
