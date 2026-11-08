@@ -221,6 +221,8 @@ def decompose(
         out["microcosm"] = {}
         from microcosm.fit import NO_WEIGHTS, RegimeGatedQRF
 
+        # microcosm-fit at 7080ba8 reads its thread caps from these variables
+        # (microcosm/fit/qrf.py:905-910).
         os.environ["POPULACE_FIT_N_JOBS"] = str(n_jobs)
         os.environ["POPULACE_FIT_PREDICT_WORKERS"] = str(n_jobs)
         for label, weights in (("weighted", w_donor), ("unweighted", NO_WEIGHTS)):

@@ -46,6 +46,8 @@ N_JOBS = 4
 def analyse_fold(X_donor, y_donor, w_donor, X_rec, w_rec, *, seed):
     from microcosm.fit import RegimeGatedQRF
 
+    # microcosm-fit at 7080ba8 reads its thread caps from these variables
+    # (microcosm/fit/qrf.py:905-910).
     os.environ["POPULACE_FIT_N_JOBS"] = str(N_JOBS)
     os.environ["POPULACE_FIT_PREDICT_WORKERS"] = str(N_JOBS)
     predictors = list(X_donor.columns)

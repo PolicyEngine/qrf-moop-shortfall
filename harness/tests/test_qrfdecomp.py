@@ -157,6 +157,8 @@ def test_microimpute_draws_replicate_exactly(data):
 def test_microcosm_expectation_matches_its_draws(data):
     from microcosm.fit import NO_WEIGHTS, RegimeGatedQRF
 
+    # microcosm-fit at 7080ba8 reads its thread caps from these variables
+    # (microcosm/fit/qrf.py:905-910).
     os.environ.setdefault("POPULACE_FIT_N_JOBS", "2")
     os.environ.setdefault("POPULACE_FIT_PREDICT_WORKERS", "2")
     x, y, _, x_rec = data

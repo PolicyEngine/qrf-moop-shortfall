@@ -1,10 +1,10 @@
 """Decompose the QRF MOOP shortfall on the 2026 CPS ASEC folds.
 
 Loads the data, units, design matrix and folds exactly as
-``experiments/moop_spm/run.py`` does (microimpute ``main``), then runs every
+``experiments/moop_spm/run.py`` does (microimpute at e4cbe02), then runs every
 decomposition cell for each fold. The baseline cell is microimpute's QRF fit
-with the experiment's arguments and seed (20261105 + fold); its first draw is
-compared with the cached draws behind the published results.
+with the experiment's arguments and seed (20261105 + fold); main() compares its
+first draw with the experiment's cached draws when they exist.
 
 Truth on CPS data is the fold's reported total: SPM-unit-weighted
 ``SPM_MEDXPNS``, as in the experiment.
@@ -38,13 +38,28 @@ from experiments.moop_spm.run import assign_folds  # noqa: E402
 
 # Census's public-use CPS ASEC 2026 files: the experiment's loader downloads
 # them here and checks the zip's SHA-256. CACHE holds the experiment's own
-# per-fold draws, which `python -m experiments.moop_spm.run --output
-# ../data/moop-spm` (run in microimpute/) writes to data/moop-spm/cache;
-# without them, main() skips the comparison with the published draws.
+# per-fold draws: `python -m experiments.moop_spm.run --output ../data/moop-spm`
+# (run in microimpute/) caches them in data/moop-spm/cache and writes
+# data/moop-spm/results.json, whose config.tag names the cached files. Without
+# the draws, main() skips the comparison.
 DATA_DIR = Path(os.environ.get("QRF_SHORTFALL_DATA", HERE.parent / "data" / "cps-asec-2026"))
 CACHE = Path(os.environ.get("QRF_SHORTFALL_CACHE", HERE.parent / "data" / "moop-spm" / "cache"))
-PUBLISHED_TAG = "a82da82512c894e6"  # results.json config.tag on main
+PUBLISHED_TAG = "a82da82512c894e6"  # config.tag of the published run at e4cbe02
 SEED = 20261105
+
+
+def cached_tag() -> str:
+    """Return the tag of the experiment run whose cached draws main() reads.
+
+    The experiment's cache key covers its environment, microimpute's installed
+    version included, so a rerun can cache its draws under a new tag. Read the
+    tag from that run's results.json beside CACHE; without one, use the
+    published run's tag.
+    """
+    results = CACHE.parent / "results.json"
+    if results.exists():
+        return json.loads(results.read_text())["config"]["tag"]
+    return PUBLISHED_TAG
 
 
 def main() -> None:
@@ -65,6 +80,8 @@ def main() -> None:
     weight = units["unit_weight"].to_numpy(dtype=float)
     print(f"{len(units)} units, folds {np.bincount(folds).tolist()}, "
           f"reported total ${(moop * weight).sum() / 1e9:.1f}B", flush=True)
+    tag = cached_tag()
+    print(f"experiment cache tag {tag}", flush=True)
 
     results = json.loads(args.out.read_text()) if args.out.exists() else []
     done = {r["fold"] for r in results}
@@ -85,7 +102,7 @@ def main() -> None:
             n_draws=args.draws,
         )
         first = out.pop("microimpute_draws_first")
-        cached = CACHE / f"{PUBLISHED_TAG}_fold{fold}.npz"
+        cached = CACHE / f"{tag}_fold{fold}.npz"
         if cached.exists():
             published = np.load(cached, allow_pickle=False)["qrf"]
             out["published_first_draw_max_abs_diff"] = float(

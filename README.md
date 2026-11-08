@@ -1,6 +1,6 @@
 # qrf-moop-shortfall
 
-PolicyEngine's MOOP imputation experiment fits microimpute's quantile regression forest (QRF) to the 2026 CPS ASEC, and its draws of medical out-of-pocket spending (MOOP) total 3.6% less than the reported values. We measure each cause's share of that shortfall and run microcosm-fit's `RegimeGatedQRF`, which Microcosm uses to build PolicyEngine's microdata, through the same tests. [REPORT.md](REPORT.md) gives the results, the code behind each mechanism and the validation.
+PolicyEngine's MOOP imputation experiment fits microimpute's quantile regression forest (QRF) to the 2026 CPS ASEC, and its draws of medical out-of-pocket spending (MOOP) total 3.6% less than the reported values. We measure each cause's share of that shortfall and run microcosm-fit's `RegimeGatedQRF`, which Microcosm uses to build PolicyEngine's microdata, through the same tests. PolicyEngine archived microimpute on November 8, 2026, without changing the QRF code we analyze. [REPORT.md](REPORT.md) gives the results, the code behind each mechanism and the validation.
 
 - microimpute's quantile grid costs 1.76 points and quantile-forest's linear quantile 1.54 points. The forest's own mean falls 0.18% short, inside the folds' noise.
 - One stored sample per leaf and unweighted fitting don't cause the shortfall. Setting `max_samples_leaf=None` lowers the total a further 1.65 points, because quantile-forest then pools leaf samples by count.

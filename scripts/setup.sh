@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build the pinned environment for the harness:
-#   .venv/              Python 3.13, requirements.lock.txt, microimpute editable
+#   .venv/              Python 3.13.13, requirements.lock.txt, microimpute editable
 #   microimpute/        microimpute main at e4cbe02 (the experiment's code)
 #   microimpute-pr219/  PR 219's head, 296e47d (harness/pr219.py imports it)
 set -euo pipefail
@@ -24,7 +24,7 @@ test "$(git -C microimpute rev-parse HEAD)" = "$MAIN"
 test "$(git -C microimpute-pr219 rev-parse HEAD)" = "$PR219"
 
 # Reruns keep the venv and sync it to the lock exactly.
-uv venv --quiet --allow-existing --python 3.13 .venv
+uv venv --quiet --allow-existing --python 3.13.13 .venv
 uv pip sync --quiet --python .venv/bin/python requirements.lock.txt
 uv pip install --quiet --python .venv/bin/python --no-deps -e ./microimpute
 echo "setup done: .venv, microimpute@${MAIN:0:7}, microimpute-pr219@${PR219:0:7}"
