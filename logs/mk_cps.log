@@ -1,0 +1,6 @@
+fold 0 done in 33s; reproduces cps.json to 0.0e+00 (knots), 2.2e-16 (pool mean)
+fold 1 done in 33s; reproduces cps.json to 0.0e+00 (knots), 0.0e+00 (pool mean)
+fold 2 done in 33s; reproduces cps.json to 0.0e+00 (knots), 2.2e-16 (pool mean)
+fold 3 done in 35s; reproduces cps.json to 0.0e+00 (knots), 0.0e+00 (pool mean)
+fold 4 done in 37s; reproduces cps.json to 0.0e+00 (knots), 0.0e+00 (pool mean)
+mk exit 0

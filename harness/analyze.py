@@ -178,7 +178,11 @@ DIST_CELLS = [
 
 
 def dist_table(results: list[dict], truth_stats_key) -> str:
-    """Realized-draw statistics per cell, % vs truth, mean over splits."""
+    """Realized-draw statistics per cell: the mean over splits of each split's % gap.
+
+    This averages per-split gaps; it is not the gap in the pooled distribution,
+    which ``pooled_dist.py`` computes for CPS.
+    """
     stats = ["total", "median", "p90", "p95", "p99"]
     lines = ["| Cell | " + " | ".join(stats) + " |", "|---|" + "---|" * len(stats)]
 
@@ -236,7 +240,8 @@ def main() -> None:
         per_fold = summarize_split(cps, lambda r: r["truth"]["reported_total"])
         print("### Per-fold mean (SE across folds)\n")
         print(shapley_table(per_fold), "\n")
-        print("### Realized draws, % vs reported (mean over folds)\n")
+        print("### Realized draws, mean of the folds' % differences from reported "
+              "(pooled_dist.py computes the pooled statistics)\n")
         print(dist_table(cps, lambda r: r["truth"]["reported_stats"]), "\n")
         print(validation(cps), "\n")
         for r in cps:

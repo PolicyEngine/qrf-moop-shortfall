@@ -1,0 +1,7 @@
+fold 0 done in 123s
+fold 1 done in 124s
+fold 2 done in 111s
+fold 3 done in 125s
+fold 4 done in 108s
+wrote ../results/pooled_dist_pr219.json
+pd pr219 exit 0
