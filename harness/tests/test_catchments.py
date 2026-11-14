@@ -8,7 +8,9 @@ filling donor, and every split in the write-up rests on two identities:
    estimate computed directly (``recipient_estimates``),
 
 for per-tree ("tree") and count-pooled ("pooled") reads, for in-bag fills
-(bootstrap counts) and honest fills (arbitrary positive masses).
+(bootstrap counts) and honest fills (arbitrary positive masses). The
+identities cover the recipients that some tree's leaf gives a filling
+donor; for any other recipient both functions raise, in both modes.
 ``microcosm_actual.py`` also recovers a fitted forest's training rows from
 ``forest_.y_train`` and ``sorter_``; the recovered rows must reproduce the
 training targets in order, and the count-pooled estimate from them must
@@ -21,6 +23,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 from quantile_forest import RandomForestQuantileRegressor
@@ -58,17 +61,45 @@ def test_catchment_identities(seed, n_fill, n_rec, honest):
         x_fill, y_fill = x, y
         mass = qd.bootstrap_counts(model, n_fill).astype(float)
     lf, lr = model.apply(x_fill), model.apply(x_rec)
+    held = np.stack([np.bincount(lf[:, t], weights=mass[t], minlength=nodes[t])[lr[:, t]]
+                     for t in range(model.n_estimators)], axis=1)
+    ok = (held > 0).any(axis=1)  # support is the same for both modes
     for mode in ("tree", "pooled"):
-        held = np.stack([np.bincount(lf[:, t], weights=mass[t], minlength=nodes[t])[lr[:, t]]
-                         for t in range(model.n_estimators)], axis=1)
-        ok = held.sum(axis=1) > 0 if mode == "pooled" else (held > 0).any(axis=1)
         if not ok.all():
-            continue  # a recipient with no filling donor anywhere: the code raises by design
-        c = fill_catchments(lf, mass, lr, scale, nodes, mode)
-        est = recipient_estimates(lf, mass, y_fill, lr, nodes, mode)
-        assert np.isclose(c.sum(), scale.sum(), rtol=1e-12)
-        assert np.isclose((c * y_fill).sum(), (est * scale).sum(), rtol=1e-12)
+            with pytest.raises(RuntimeError):
+                fill_catchments(lf, mass, lr, scale, nodes, mode)
+            with pytest.raises(RuntimeError):
+                recipient_estimates(lf, mass, y_fill, lr, nodes, mode)
+        if not ok.any():
+            continue
+        c = fill_catchments(lf, mass, lr[ok], scale[ok], nodes, mode)
+        est = recipient_estimates(lf, mass, y_fill, lr[ok], nodes, mode)
+        assert np.isfinite(est).all()
+        assert np.isclose(c.sum(), scale[ok].sum(), rtol=1e-12)
+        assert np.isclose((c * y_fill).sum(), (est * scale[ok]).sum(), rtol=1e-12)
         assert (c >= 0).all()
+
+
+@pytest.mark.parametrize("mode", ["tree", "pooled"])
+def test_recipient_without_filling_donor_raises(mode):
+    """A recipient whose leaves hold no filling mass in any tree has no estimate."""
+    _, model, x, y, x_rec, scale = small_problem(5, 120, 20, None)
+    nodes = [e.tree_.node_count for e in model.estimators_]
+    lf, lr = model.apply(x), model.apply(x_rec)
+    mass = qd.bootstrap_counts(model, len(y)).astype(float)
+    # Strip the filling mass from every leaf that recipient 0 lands in.
+    for t in range(model.n_estimators):
+        mass[t, lf[:, t] == lr[0, t]] = 0.0
+    with pytest.raises(RuntimeError):
+        fill_catchments(lf, mass, lr, scale, nodes, mode)
+    with pytest.raises(RuntimeError):
+        recipient_estimates(lf, mass, y, lr, nodes, mode)
+    # The other recipients keep finite estimates where they have support.
+    held = np.stack([np.bincount(lf[:, t], weights=mass[t], minlength=nodes[t])[lr[:, t]]
+                     for t in range(model.n_estimators)], axis=1)
+    ok = (held > 0).any(axis=1)
+    assert not ok[0] and ok[1:].any()
+    assert np.isfinite(recipient_estimates(lf, mass, y, lr[ok], nodes, mode)).all()
 
 
 def test_pooled_estimate_matches_predict_mean_for_in_bag_fill():

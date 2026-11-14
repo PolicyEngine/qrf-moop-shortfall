@@ -44,22 +44,33 @@ from experiments.moop_spm.run import assign_folds  # noqa: E402
 # the draws, main() skips the comparison.
 DATA_DIR = Path(os.environ.get("QRF_SHORTFALL_DATA", HERE.parent / "data" / "cps-asec-2026"))
 CACHE = Path(os.environ.get("QRF_SHORTFALL_CACHE", HERE.parent / "data" / "moop-spm" / "cache"))
-PUBLISHED_TAG = "a82da82512c894e6"  # config.tag of the published run at e4cbe02
 SEED = 20261105
+# The published run at e4cbe02 (experiments/moop_spm/results/results.json).
+PUBLISHED_RUN = {"source": "published run at e4cbe02", "tag": "a82da82512c894e6",
+                 "seed": SEED, "folds": 5, "draws": 10}
 
 
-def cached_tag() -> str:
-    """Return the tag of the experiment run whose cached draws main() reads.
+def cached_run(n_draws: int) -> dict:
+    """Identify the experiment run whose cached draws the harness compares with.
 
     The experiment's cache key covers its environment, microimpute's installed
-    version included, so a rerun can cache its draws under a new tag. Read the
-    tag from that run's results.json beside CACHE; without one, use the
-    published run's tag.
+    version included, so a fresh run caches its draws under a new tag and
+    records it in the results.json beside CACHE. Without that file, the
+    harness reads the published run's tag. A fresh run must share the
+    published run's seed and folds and hold at least ``n_draws`` draws per
+    fold; otherwise its draws answer a different question, and this raises.
+    Returns the run's source, tag, seed, folds and draws, which the callers
+    record in their output.
     """
     results = CACHE.parent / "results.json"
-    if results.exists():
-        return json.loads(results.read_text())["config"]["tag"]
-    return PUBLISHED_TAG
+    if not results.exists():
+        return dict(PUBLISHED_RUN)
+    config = json.loads(results.read_text())["config"]
+    run = {"source": "fresh run (results.json beside the cache)",
+           **{k: config[k] for k in ("tag", "seed", "folds", "draws")}}
+    if (run["seed"], run["folds"]) != (SEED, 5) or run["draws"] < n_draws:
+        raise ValueError(f"{results} describes a run unlike the published one: {run}")
+    return run
 
 
 def main() -> None:
@@ -80,8 +91,9 @@ def main() -> None:
     weight = units["unit_weight"].to_numpy(dtype=float)
     print(f"{len(units)} units, folds {np.bincount(folds).tolist()}, "
           f"reported total ${(moop * weight).sum() / 1e9:.1f}B", flush=True)
-    tag = cached_tag()
-    print(f"experiment cache tag {tag}", flush=True)
+    run = cached_run(args.draws)
+    tag = run["tag"]
+    print(f"experiment run {run}", flush=True)
 
     results = json.loads(args.out.read_text()) if args.out.exists() else []
     done = {r["fold"] for r in results}
@@ -105,6 +117,9 @@ def main() -> None:
         cached = CACHE / f"{tag}_fold{fold}.npz"
         if cached.exists():
             published = np.load(cached, allow_pickle=False)["qrf"]
+            if published.shape != (run["draws"], int(rec.sum())):
+                raise ValueError(f"{cached} holds draws of shape {published.shape}")
+            out["experiment_run"] = run
             out["published_first_draw_max_abs_diff"] = float(
                 np.max(np.abs(published[0] - first))
             )

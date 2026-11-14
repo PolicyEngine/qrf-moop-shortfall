@@ -3,10 +3,12 @@ zero shares, PR 219's own code and the forest-bias decomposition.
 
 Every percentage is 100 * (total / truth - 1). "Pooled" sums totals over
 CPS folds (every unit a recipient once, truth = the full reported total).
-SEs are across folds (CPS) or replications (synthetic): differences
-between methods on the same recipients are precise, while each method's
-level carries the recipients' own sampling noise, which the across-fold SE
-of a level measures.
+SEs are across replications (synthetic) or across folds (CPS). A CPS fold
+SE, the SD of the five folds' errors over sqrt(5), describes how much the
+folds differ, not the pooled estimate's sampling error: any two folds'
+forests share three of their four training folds, and it ignores the CPS
+survey design. Differences between methods on the same recipients vary
+little across folds; a level against the reported total varies more.
 """
 
 from __future__ import annotations
@@ -263,8 +265,10 @@ def fb_cps_table(fb, cps_cells=None):
         per = [pct(r["totals"][k], r["truth"]) for r in fb]
         pooled = pct(sum(r["totals"][k] for r in fb), T)
         lines.append(f"| {FB_LABEL[k]} | {fmt(*mse(per))} | {fmt(pooled)} |")
-    for a, b, lab in (("ahalf/tree", "honest/tree", "selection (adaptive minus honest, same trees), per-tree"),
-                      ("ahalf/pooled", "honest/pooled", "selection, count-pooled"),
+    for a, b, lab in (("ahalf/tree", "honest/tree",
+                       "adaptive-minus-honest total contrast (same trees), per-tree"),
+                      ("ahalf/pooled", "honest/pooled",
+                       "adaptive-minus-honest total contrast, count-pooled"),
                       ("full/tree", "ahalf/tree", "full minus half-data adaptive, per-tree")):
         per = [100 * (r["totals"][a] - r["totals"][b]) / r["truth"] for r in fb]
         pooled = 100 * sum(r["totals"][a] - r["totals"][b] for r in fb) / T
@@ -448,9 +452,13 @@ def mk_table(mk, cps):
     knot_chk = max(r[lab]["knots_vs_predict_max_rel_diff"] for r in mk
                    for lab in ("weighted", "unweighted"))
     lines.append("")
+    medians = {lab: ", ".join(f"{r[lab]['pool_size_median']:.0f}" for r in mk)
+               for lab in ("weighted", "unweighted")}
     lines.append(f"- checks: reproduces cps.json totals {checks:.1e}; pool means vs "
-                 f"predict(mean) {mean_chk:.1e}; pool knots vs predict(knots) {knot_chk:.1e}; "
-                 f"median pool size {np.median([r['weighted']['pool_size_median'] for r in mk]):.0f}")
+                 f"predict(mean) {mean_chk:.1e}; integrated 203-knot expectation from the "
+                 f"pools vs from predict(knots) {knot_chk:.1e}")
+    lines.append(f"- each fold's median pool size: weighted {medians['weighted']}; "
+                 f"unweighted {medians['unweighted']}")
     del cps
     return "\n".join(lines)
 

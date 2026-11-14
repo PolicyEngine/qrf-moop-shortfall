@@ -6,7 +6,7 @@ PolicyEngine's MOOP imputation experiment ([`experiments/moop_spm`](https://gith
 
 Over the experiment's five folds, microimpute's QRF draws total $828.4B against $858.9B reported, 3.55% short. Our rerun reproduces the published draws exactly, and the draws' exact expectation falls 3.48% short.
 
-Two steps that turn the forest into draws account for 3.30 of those points, and the forest's own conditional mean accounts for the other 0.18 in these runs. Each step's effect depends on whether the other remains, so we split the 3.30 points by averaging the two orders of removal, a two-factor Shapley split given the fitted forests. We compute each fold SE as the standard deviation of the five folds' percentage errors divided by √5. It describes how much the folds differ, not the pooled estimate's sampling error: any two folds' forests share three of their four training folds, and the fold SE ignores the CPS survey design.
+Two steps that turn the forest into draws account for 3.30 of those points, and the forest's own conditional mean accounts for the other 0.18 in these runs. Each step's effect depends on whether the other remains, so we split the 3.30 points by averaging the two orders of removal, a two-factor Shapley split given the fitted forests. We compute each fold SE by dividing the standard deviation of the five folds' percentage errors by √5. It describes how much the folds differ, not the pooled estimate's sampling error: any two folds' forests share three of their four training folds, and the fold SE ignores the CPS survey design.
 
 | Part of the shortfall (CPS, five folds pooled) | Points, order-averaged | Direct effects, points | Fold SE |
 |---|---|---|---|
@@ -17,12 +17,12 @@ Two steps that turn the forest into draws account for 3.30 of those points, and 
 
 The forest's share varies widely by fold, from −2.34% to +2.43%. A t interval on the five folds' mean runs from −2.58 to +2.26 points, so these runs can't rule out a forest bias of two points in either direction. The two draw steps' shares carry fold SEs of 0.02 and 0.03 points.
 
-Two other candidates don't cause the CPS shortfall:
+We measured the other two candidates as changes to that baseline, outside the grid and linear-quantile split:
 
 - **One sample per leaf** loses nothing here. Fully grown trees leave a single distinct MOOP value in 99.98% of leaves (fold 0), so the one stored sample carries the leaf's whole value. Setting `max_samples_leaf=None` keeps every in-bag sample, and quantile-forest then pools them by bootstrap count, so a leaf of several zero-MOOP donors outweighs a leaf holding one positive donor. Zero draws nearly double (12.2% against 6.4% reported), and the total falls a further 1.65 points.
-- **Weights** move the CPS total by less than a point. Resampling donors in proportion to weight raises it by 0.52 points (fold SE 0.54), and passing weights to the split criterion, as microimpute does with `weight_col`, lowers it by 0.25 (fold SE 0.18).
+- **Weights** move the total in opposite directions. Passing weights to the split criterion, as microimpute does with `weight_col`, lowers it by 0.25 points (fold SE 0.18), so microimpute's own weighting wouldn't shrink the shortfall. Resampling donors in proportion to weight, as Microcosm does, raises it by 0.52 points (fold SE 0.54), about 15% of the 3.48-point expected shortfall in these runs.
 
-[PR 219](https://github.com/PolicyEngine/microimpute/pull/219), a draft, removes the shortfall on CPS when we run its own code (expected totals +0.3% unweighted, +0.5% weighted). It drops the grid, weights leaves per tree, and stops trees at leaves of 20 donors, so each row's pool holds about 4,300 values and quantile-forest's interpolated weighted quantiles cost 0.13 points. Microcosm's `RegimeGatedQRF` falls 1.2% short in expectation and 1.0% short in its draws, the figure [PR 223](https://github.com/PolicyEngine/microimpute/pull/223) reports. The linear quantile of each row's pool, a median of 244 amounts, costs 0.45 points of that, and interpolating between 203 knots gives back 0.02. Microcosm's pool-mean amounts put the total 0.73% short (fold SE 0.68).
+[PR 219](https://github.com/PolicyEngine/microimpute/pull/219), a draft, removes the shortfall on CPS when we run its own code (expected totals +0.3% unweighted, +0.5% weighted). It drops the grid, weights leaves per tree, and stops trees at leaves of 20 donors, so each row's pool holds about 4,300 values and quantile-forest's interpolated weighted quantiles cost 0.13 points. Microcosm's `RegimeGatedQRF` falls 1.2% short in expectation and 1.0% short in its draws, the figure [PR 223](https://github.com/PolicyEngine/microimpute/pull/223) reports. The linear quantile of each row's pool, with fold medians of 243 to 246 amounts, costs 0.45 points of that, and interpolating between 203 knots gives back 0.02. Microcosm's pool-mean amounts put the total 0.73% short (fold SE 0.68).
 
 On a synthetic process with a known conditional mean, the same two draw steps cost more (grid 4.5 points, linear quantile 4.0, order-averaged). But microimpute's forest mean there runs 7.7% high, so its expected draws net out 0.8% short. The excess comes from the adaptive splits of fully grown trees. They give donors with large positive noise about a fifth more catchment than average, which adds 11 to 13 points, and filling the same trees with donors the splits never saw removes it. PR 219's forests, with leaves of 20 or more donors, show no such excess (forest mean −0.1% where sampling ignores the noise). Microcosm also grows its amount forest's trees fully, and that forest carries the same selection there (10.9 points). Reading its amounts as the pool mean puts the total 9 to 11% high, and honest fills of forests we build Microcosm's way remove the excess. Split-criterion weights also cost more there, 0.9 to 1.5 points.
 
@@ -49,7 +49,7 @@ Setting `max_samples_leaf=None`, as PR 219 and Microcosm both do, keeps every in
 | one sample per leaf, exact u, inverse ECDF | 6.91% | −0.18% |
 | all samples, count-pooled, exact u, inverse ECDF | 12.22% | −2.35% |
 
-At microimpute's own draw, `max_samples_leaf=None` costs 1.65 points. Count pooling takes 2.17; the larger pool (a median of 169 values instead of 100) gives back 0.50 by shrinking the linear quantile's loss, and the grid's interaction gives back 0.01.
+At microimpute's own draw, `max_samples_leaf=None` costs 1.65 points. Count pooling takes 2.17; the larger pool (a median of 169 values in every fold, instead of 100) gives back 0.50 by shrinking the linear quantile's loss, and the grid's interaction gives back 0.01.
 
 ### Weights: under a point on CPS
 
@@ -60,7 +60,7 @@ The experiment fits without weights (`experiments/moop_spm/methods.py:324-330`).
 | split-criterion weights (microimpute with `weight_col`) | −0.25 (fold SE 0.18) | −0.08 (0.16) |
 | weighted bootstrap (Microcosm) | +0.52 (0.54) | +0.26 (0.62) |
 
-The weighted bootstrap's change stays inside its fold SE, while the split-criterion weights' −0.25 exceeds its fold SE of 0.18, and neither reaches a point. The weighted-bootstrap forest's own mean exceeds the reported total by 0.08%, and on the synthetic process both kinds of weighting move the total further.
+The weighted bootstrap's +0.52, about 15% of the expected shortfall, stays inside its fold SE, while the split-criterion weights' −0.25 exceeds its fold SE of 0.18. The weighted-bootstrap forest's own mean exceeds the reported total by 0.08%, and on the synthetic process both kinds of weighting move the total further.
 
 ### Linear quantile: 1.54 points
 
@@ -80,7 +80,7 @@ With per-tree weights, which microimpute's one-sample leaves reproduce, the adap
 
 ## How the shortfall grows up the distribution
 
-The draws' shortfall widens up the distribution. The grid and the linear quantile explain the tail, and the forest explains the median's 2% gap. Each statistic below comes from all 55,401 SPM units' draws pooled, averaged over ten draws, against the same statistic of the reported values (`harness/pooled_dist.py`):
+The draws' shortfall widens up the distribution. The grid and the linear quantile explain the tail, and the forest explains the median's 2% gap. We pool the draws of all 55,401 SPM units, compute each statistic for each of ten realizations, average the ten statistics, and compare the average with the same statistic of the reported values (`harness/pooled_dist.py`):
 
 | CPS, five folds pooled, realized draws vs reported, % | total | median | p75 | p90 | p95 | p99 |
 |---|---|---|---|---|---|---|
@@ -110,7 +110,7 @@ We ran PR 219's own code from a worktree on the same folds and seeds (`harness/p
 
 PR 219 removes the shortfall on CPS. Its expected totals land within one fold SE of the reported total (0.66 unweighted, 0.69 weighted), and its pooled unweighted draws track the reported distribution from the median (+1.0%) through p99 (−0.4%), where main's draws run 2.1% and 6.8% short. Its forest parameters differ from main's only in `min_samples_leaf` and `max_samples_leaf` (`get_params` confirms it). Its forest's own mean exceeds main's by 0.61 points (fold SE 0.33), and its draws close the median gap that main's fully grown trees leave under every reading.
 
-On the synthetic process PR 219 lands within its replication noise of the truth where sampling ignores the noise (x_only: −0.35% unweighted, +0.30% weighted, SEs 0.3). Under informative sampling its unweighted draws run 1.85% low (SE 0.54), of which the sampling itself accounts for 1.34 points, and its survey-weighted draws remove that (+0.03%, SE 0.56). Its unweighted forest means land at −0.13% (x_only) and −1.62% (informative, where the sampling costs microimpute's forests 1.34 points), against +10.4% and +7.7% for main's fully grown trees.
+On the synthetic process PR 219's expected totals land within their replication noise of the truth where sampling ignores the noise (x_only: −0.35% unweighted, +0.30% weighted, SEs 0.3). Under informative sampling its unweighted expected total falls 1.85% short (SE 0.54), near the 1.34 points the sampling costs main's forests, and its survey-weighted expected total lands at +0.03% (SE 0.56). Its realized draws come to −2.35% and −0.28%. We didn't split PR 219's forest into selection, sampling and smoothing, so we haven't measured its own sampling component. Its unweighted forest means land at −0.13% (x_only) and −1.62% (informative), against +10.4% and +7.7% for main's fully grown trees.
 
 ## Microcosm's RegimeGatedQRF
 
@@ -125,9 +125,9 @@ We split Microcosm's draw loss by rebuilding each recipient's pool from the amou
 | amount: linear quantiles at 203 knots, with interpolation between them (Microcosm's expected draw) | −1.17 | −2.00 |
 | Microcosm's realized draws | −1.03 | −1.99 |
 
-The gate gets zeros right: it expects 6.31% weighted and 6.22% unweighted, against 6.40% reported. The linear quantile of each row's pool costs 0.45 points weighted and 0.73 unweighted, where the pools hold a median of 244 and 167 amounts. Interpolating between 203 knots, in place of the exact quantile function, raises each total by 0.02 points. With pool-mean amounts, the weighted total falls 0.73% short of the reported total (fold SE 0.68). Microcosm keeps every leaf sample, as microimpute does with `max_samples_leaf=None`, but its zeros don't inflate. The gate alone decides them, and Microcosm grows the amount forest on positive donors only, so its leaves hold no zeros for count pooling to over-weight.
+The gate expects 6.31% zero draws weighted and 6.22% unweighted, against 6.40% reported. The linear quantile of each row's pool costs 0.45 points weighted and 0.73 unweighted, where each fold's median pool holds 243 to 246 amounts weighted and 167 unweighted. Interpolating between 203 knots, in place of the exact quantile function, raises each total by 0.02 points. With pool-mean amounts, the weighted total falls 0.73% short of the reported total (fold SE 0.68). Microcosm keeps every leaf sample, as microimpute does with `max_samples_leaf=None`, but its zeros don't inflate. The gate alone decides them, and Microcosm grows the amount forest on positive donors only, so its leaves hold no zeros for count pooling to over-weight.
 
-Microcosm grows its amount forest's trees fully, as microimpute does, and on the synthetic process that forest carries the same selection. There Microcosm's draws run 8.0% high (weighted, informative design) and 9.3% high (x_only), its pool-mean reading runs 9.2% and 10.6% high, and the exact split puts 10.9 points on selection. On CPS MOOP it doesn't run high. With its pool-mean amounts, the total falls 0.73% short of the reported total, and in forests we build its way the adaptive fill's total falls 0.81 points below the honest fill's (fold SE 0.49).
+Microcosm grows its amount forest's trees fully, as microimpute does, and on the synthetic process that forest carries the same selection. There Microcosm's expected draws run 8.0% high (weighted, informative design) and 9.3% high (x_only), its realized draws 8.7% and 9.7%, its pool-mean reading 9.2% and 10.6%, and the exact split puts 10.9 points on selection. On CPS MOOP it doesn't run high. With its pool-mean amounts, the total falls 0.73% short of the reported total, and in forests we build its way the adaptive fill's total falls 0.81 points below the honest fill's (fold SE 0.49).
 
 ## The synthetic process
 
@@ -144,7 +144,7 @@ Microcosm grows its amount forest's trees fully, as microimpute does, and on the
 | Microcosm, weighted, expected | +7.98 (0.70) | +9.30 (0.79) |
 | Microcosm, weighted, pool-mean amounts | +9.17 (0.70) | +10.55 (0.80) |
 
-The grid and the linear quantile pull the same way as on CPS, and harder. As direct effects, the grid costs 5.3 points at the linear quantile and 3.7 at the inverse ECDF, and the linear quantile costs 4.8 on the grid and 3.2 at an exact uniform. But here the forest's own mean runs 7.7% high (10.4% in x_only), so microimpute's two losses nearly cancel it, and Microcosm, which has no grid, lands 8% high. Reading Microcosm's amounts as the pool mean would push it to 9%.
+The grid and the linear quantile pull the same way as on CPS, and harder. As direct effects, the grid costs 5.3 points at the linear quantile and 3.7 at the inverse ECDF, and the linear quantile costs 4.8 on the grid and 3.2 at an exact uniform. But here the forest's own mean runs 7.7% high (10.4% in x_only), so microimpute's two losses nearly cancel it, and Microcosm, which has no grid, lands 8% high in expectation. Reading Microcosm's amounts as the pool mean would push it to 9%.
 
 The leaf and weight candidates move microimpute's total differently here:
 
@@ -157,7 +157,7 @@ The leaf and weight candidates move microimpute's total differently here:
 | weighted bootstrap (Microcosm) | +1.30 (0.34) | −0.27 (1.02) |
 | split-criterion weights (microimpute with `weight_col`) | −0.90 (0.17) | −1.52 (0.12) |
 
-Count pooling costs 0.8 points here, nearly all of it through selection (next section), against 2.2 on CPS, and the larger pool's gain on the linear quantile outweighs it. The weighted bootstrap raises the informative design's total by 1.30 points, close to the 1.34 that the informative sampling takes, and moves x_only's by −0.27 (SE 1.02). Split-criterion weights lower the total by 0.9 and 1.5 points, mostly through the forest's own mean (−0.82 and −1.31), against 0.25 on CPS.
+Count pooling costs 0.8 points here, nearly all of it through selection, against 2.2 on CPS, and the larger pool's gain on the linear quantile outweighs it. The weighted bootstrap raises the informative design's total by 1.30 points, close to the 1.34 that the informative sampling takes, and moves x_only's by −0.27 (SE 1.02). Split-criterion weights lower the total by 0.9 and 1.5 points, mostly through the forest's own mean (−0.82 and −1.31), against 0.25 on CPS.
 
 ### Where the synthetic forest's excess comes from
 
@@ -223,7 +223,7 @@ We read this code on 2026-11-07 and 2026-11-13: microimpute `main` at [`e4cbe02`
 
 ## Method and validation
 
-The harness (`harness/`) computes each recipient's exact expected draw under each mechanism from the fitted trees, so mechanism differences carry no Monte Carlo noise. It also draws ten realizations per cell for the distribution statistics.
+The harness (`harness/`) computes each recipient's expected draw under each mechanism from the fitted trees, so mechanism differences carry no Monte Carlo noise. Every expectation comes out exact except PR 219's unweighted one, which the harness integrates numerically over 4,000 levels. It also draws ten realizations per cell for the distribution statistics.
 
 - **Differential tests** in `harness/tests/test_qrfdecomp.py` (9 pass) check that:
   - pooled quantiles match quantile-forest's `predict` for one-sample and all-sample leaves, with and without weights;
@@ -232,11 +232,11 @@ The harness (`harness/`) computes each recipient's exact expected draw under eac
   - replayed microimpute draws match its `predict` to 1e-12;
   - Microcosm's exact expectation matches 600 of its draws within 5 SE;
   - pool quantiles match numpy on the expanded sample (a Hypothesis property).
-- **Catchment properties** in `harness/tests/test_catchments.py` (3 pass) check, for per-tree and count-pooled reads and for in-bag and honest fills, that catchments sum to the recipients' weight and that Σ c_j y_j equals the directly computed total. The file also checks that count-pooled estimates match `predict(quantiles="mean")`, and that the harness recovers a weighted-bootstrap forest's training rows from `forest_.y_train` and `sorter_`.
+- **Catchment properties** in `harness/tests/test_catchments.py` (5 pass) check, for per-tree and count-pooled reads and for in-bag and honest fills, that catchments sum to the recipients' weight and that Σ c_j y_j equals the total of the recipients' own estimates, over the recipients that some tree's leaf gives a filling donor. For a recipient without one, both reads raise an error. The file also checks that count-pooled estimates match `predict(quantiles="mean")`, and that the harness recovers a weighted-bootstrap forest's training rows from `forest_.y_train` and `sorter_`.
 - **Reproduction.** Each fold's microimpute forest reproduces all ten published cached draws exactly (max abs diff 0.0), its exact expected draw matches `cps.json` exactly, and replays of its draws from the pools match to 8e-11.
 - **Realized against exact.** Across the 160 CPS comparisons the z-scores average −0.12 with SD 1.20. The three largest gaps fell 4.2, 3.5 and 5.8 SEs short of their expectations. Those ten-draw samples ran low in both mean and SD: their SDs came to 39-67% of what 400 draws give, the pattern of right-skewed totals (skew 0.3-0.5) when a sample misses the upper tail. Against the 400-draw SD, their gaps shrink to 2.3 to 2.4 SEs, and 400-draw reruns of the same cells land at z −1.26, −0.25 and +0.86 (`harness/recheck.py`). On the synthetic process the 256 informative and 128 x_only comparisons average +0.10 (SD 1.01) and +0.25 (SD 1.06).
 - **Parameters.** The weighted forests use the baseline forest's hyperparameters and `random_state` (`get_params` confirms them).
-- **Microcosm refits.** With the same donors, weights and seed, `RegimeGatedQRF` reproduces the saved pool-mean totals on all 12 synthetic replications and all 5 CPS folds (largest relative difference 2e-16). On the synthetic process the harness's count-pooled estimates from the recovered training rows match the forest's own `predict(quantiles="mean")` to 2e-15, and every catchment identity holds to 3e-16. On CPS, the pools that `microcosm_knots.py` rebuilds from the amount forests' stored leaf samples match `predict(quantiles="mean")` exactly and `predict(quantiles=knots)` to 1e-14, and their totals reproduce `cps.json`'s to 2e-16.
+- **Microcosm refits.** With the same donors, weights and seed, `RegimeGatedQRF` reproduces the saved pool-mean totals on all 12 synthetic replications and all 5 CPS folds (largest relative difference 2e-16). On the synthetic process the harness's count-pooled estimates from the recovered training rows match the forest's own `predict(quantiles="mean")` to 2e-15, and every catchment identity holds to 3e-16. On CPS, `microcosm_knots.py` rebuilds each recipient's pool from the amount forests' stored leaf samples. The pools' means match `predict(quantiles="mean")` exactly, their integrated 203-knot expectations match those from `predict(quantiles=knots)` to 1e-14, and their totals reproduce `cps.json`'s to 2e-16.
 - **PR 219, pooled.** `pooled_dist.py`'s ten draws per fold from PR 219's own `predict` reproduce `pr219_cps.json`'s realized totals exactly, for both weightings on all five folds.
 
 ## Reproduce
@@ -268,4 +268,4 @@ export OMP_NUM_THREADS=4
 ../.venv/bin/python analyze.py && ../.venv/bin/python analyze2.py
 ```
 
-`scripts/setup.sh` uses uv to build a Python 3.13.13 venv from `requirements.lock.txt`. It checks out microimpute `main` at `e4cbe02` into `microimpute/`, installs it, and checks out PR 219's head `296e47d` into `microimpute-pr219/`. `cps.py` loads the 2026 CPS ASEC through the experiment's own loader, which downloads Census's public-use file into `data/cps-asec-2026/` (or the folder `QRF_SHORTFALL_DATA` names) and checks its SHA-256. `export_cps.py` writes the design matrix, MOOP, weights and folds to `results/cps_inputs.npz` for the other CPS scripts; that file holds record-level survey data, so it stays out of git. `microcosm_knots.py` and `pooled_dist.py` also read `cps.json`, and `pooled_dist.py --code pr219` reads `pr219_cps.json`; both write aggregates only. To compare the harness's forests with the experiment's own draws, first run `python -m experiments.moop_spm.run --data-dir ../data/cps-asec-2026 --output ../data/moop-spm` in `microimpute/`. `cps.py` and `pooled_dist.py` then read that run's per-fold draws from `data/moop-spm/cache/` (or the folder `QRF_SHORTFALL_CACHE` names), under the tag in the `results.json` beside that folder, and skip the comparison without them. Every script caps its forests at four workers or fewer.
+`scripts/setup.sh` uses uv to build a venv that pins Python 3.13.13 and the runtime dependencies in `requirements.lock.txt`. It checks out microimpute `main` at `e4cbe02` into `microimpute/`, installs it, and checks out PR 219's head `296e47d` into `microimpute-pr219/`, and it stops if either existing checkout holds uncommitted changes. It leaves uv itself and the editable install's build tools (`setuptools>=61.0`, `wheel`) unpinned. `cps.py` loads the 2026 CPS ASEC through the experiment's own loader, which downloads Census's public-use file into `data/cps-asec-2026/` (or the folder `QRF_SHORTFALL_DATA` names) and checks its SHA-256. `export_cps.py` writes the design matrix, MOOP, weights and folds to `results/cps_inputs.npz` for the other CPS scripts; that file holds record-level survey data, so it stays out of git. `microcosm_knots.py` and `pooled_dist.py` also read `cps.json`, and `pooled_dist.py --code pr219` reads `pr219_cps.json`; both write aggregates only. To compare the harness's forests with the experiment's own draws, first run `python -m experiments.moop_spm.run --data-dir ../data/cps-asec-2026 --output ../data/moop-spm` in `microimpute/`. `cps.py` and `pooled_dist.py` then read that run's per-fold draws from `data/moop-spm/cache/` (or the folder `QRF_SHORTFALL_CACHE` names), under the tag in the `results.json` beside that folder. Without that file they read the published run's draws, as every result here does. They stop if the run used another seed, other folds or fewer draws, and skip the comparison without the draws. Every script caps its forests at four workers or fewer.

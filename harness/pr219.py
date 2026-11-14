@@ -12,11 +12,13 @@ For each split this records, for PR 219 fit without and with weights:
 - realized draws from PR 219's own ``predict`` (``n_draws`` per split);
 - ``forest_mean``: the forest's per-tree leaf mean (survey-weighted for
   the weighted fit), exact from the fitted trees;
-- ``expected``: each row's exact expected draw, summed. Weighted: equal to
-  ``forest_mean``, since the inverse ECDF preserves the mean. Unweighted:
-  quantile-forest's weighted quantile function integrated over u by the
-  midpoint rule on ``K`` levels, from the forest's own ``predict``; a
-  convergence check at 4K on a subset bounds the grid error.
+- ``expected``: each row's expected draw, summed. Weighted: exact, equal
+  to ``forest_mean``, since the inverse ECDF preserves the mean.
+  Unweighted: numerically integrated, quantile-forest's weighted quantile
+  function integrated over u by the midpoint rule on ``K`` levels, from
+  the forest's own ``predict``. A rerun at 4K levels on the first 1,000
+  rows of the first split records how far their subtotal moves; it checks
+  convergence on those rows and bounds nothing beyond them.
 
 This process imports microimpute from the PR 219 worktree, so the CPS
 inputs come from ``results/cps_inputs.npz`` (``export_cps.py``).

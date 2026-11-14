@@ -28,9 +28,12 @@ Estimators, all unweighted (the mechanism test needs no survey weights):
   which the splits never saw. ``honest/tree`` must equal cells.py's
   ``honest/meinshausen``.
 
-ahalf and honest share every partition, so ahalf - honest isolates the
-selection effect from tree size; full - ahalf is the effect of growing on
-twice the data.
+ahalf and honest share every partition, so ahalf - honest removes tree
+size from the comparison; full - ahalf is the effect of growing on twice
+the data. ahalf - honest remains a total contrast: on the synthetic
+process it carries the two fills' different smoothing as well as
+selection, and in tree mode the honest fill skips a recipient's tree
+whose leaf holds no filling donor.
 
 Usage:
   python forest_bias.py --cps --folds 0 1 2 3 4 --out results/forest_bias_cps.json
@@ -66,21 +69,21 @@ def fill_catchments(leaves_fill, mass, leaves_rec, w_rec, node_counts, mode):
     fills, ones for honest fills). ``mode`` "tree" normalizes within each
     tree's leaf and averages the trees that hold any filling mass for the
     recipient; "pooled" pools every tree's leaf mass and normalizes once.
-    Returns (c, est_weight_fn) where c has one entry per filling donor.
+    Either mode raises if a recipient's leaves hold no filling mass in any
+    tree. Returns c, one catchment per filling donor.
     """
     n_fill, n_trees = leaves_fill.shape
     M = [np.bincount(leaves_fill[:, t], weights=mass[t], minlength=node_counts[t])
          for t in range(n_trees)]
     held = np.stack([M[t][leaves_rec[:, t]] for t in range(n_trees)], axis=1)
-    if mode == "tree":
-        used = (held > 0).sum(axis=1)
-        if (used == 0).any():
-            raise RuntimeError("a recipient found no filling donor in any tree")
-        scale = w_rec / used
-    elif mode == "pooled":
-        scale = w_rec / held.sum(axis=1)
-    else:
+    if mode not in ("tree", "pooled"):
         raise ValueError(mode)
+    if not (held > 0).any(axis=1).all():
+        raise RuntimeError("a recipient found no filling donor in any tree")
+    if mode == "tree":
+        scale = w_rec / (held > 0).sum(axis=1)
+    else:
+        scale = w_rec / held.sum(axis=1)
     c = np.zeros(n_fill)
     for t in range(n_trees):
         R = np.bincount(leaves_rec[:, t], weights=scale, minlength=node_counts[t])
@@ -94,7 +97,11 @@ def fill_catchments(leaves_fill, mass, leaves_rec, w_rec, node_counts, mode):
 
 
 def recipient_estimates(leaves_fill, mass, y_fill, leaves_rec, node_counts, mode):
-    """Direct per-recipient estimates, to check the catchment identity."""
+    """Direct per-recipient estimates, to check the catchment identity.
+
+    Raises, as ``fill_catchments`` does, if a recipient's leaves hold no
+    filling mass in any tree.
+    """
     n_trees = leaves_fill.shape[1]
     num = np.zeros(len(leaves_rec))
     den = np.zeros(len(leaves_rec))
@@ -110,6 +117,8 @@ def recipient_estimates(leaves_fill, mass, y_fill, leaves_rec, node_counts, mode
         else:
             num += s1[lr]
             den += s0[lr]
+    if (den == 0).any():
+        raise RuntimeError("a recipient found no filling donor in any tree")
     return num / den
 
 

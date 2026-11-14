@@ -12,7 +12,10 @@ reported values. It writes aggregates only.
 
 - ``microimpute``: microimpute's own ``predict``, ten calls per fold. They
   must reproduce the experiment's cached draws when those exist.
-- ``published``: the experiment's cached draws themselves.
+- ``published``: the cached draws of the experiment run that
+  ``cps.cached_run`` names, the published run unless a fresh run's
+  results.json sits beside the cache. ``checks.experiment_run`` records
+  which run.
 - ``type7_exact``, ``type1_exact``: one exact uniform per row, read from the
   same one-sample-per-leaf pools with the linear quantile or the inverse
   ECDF. Both read the same uniforms.
@@ -83,15 +86,17 @@ def main_folds(QRF, X, moop, fold_of, weight, seed0, n_draws, log):
     import qrfdecomp as qd
 
     cps = {r["fold"]: r for r in json.loads((ROOT / "results" / "cps.json").read_text())}
-    from cps import CACHE, cached_tag
+    from cps import CACHE, cached_run
 
-    tag = cached_tag()
+    run = cached_run(n_draws)
+    tag = run["tag"]
     n = len(moop)
     cells = {k: np.full((n_draws, n), np.nan) for k in (
         "microimpute", "type7_exact", "type1_exact", "leafall_type1_exact")}
     published = np.full((n_draws, n), np.nan)
     have_published = True
-    checks = {"forest_rel_diff_vs_cps_json": [], "rerun_vs_published_max_abs_diff": []}
+    checks = {"experiment_run": run, "forest_rel_diff_vs_cps_json": [],
+              "rerun_vs_published_max_abs_diff": []}
     for fold in range(5):
         t0 = time.time()
         donor, rec = fold_of != fold, fold_of == fold
@@ -121,6 +126,9 @@ def main_folds(QRF, X, moop, fold_of, weight, seed0, n_draws, log):
         path = CACHE / f"{tag}_fold{fold}.npz"
         if path.exists():
             pub = np.load(path, allow_pickle=False)["qrf"]
+            if pub.shape[0] < n_draws or pub.shape[1] != int(rec.sum()):
+                raise ValueError(f"{path} holds draws of shape {pub.shape}, "
+                                 f"need at least ({n_draws}, {int(rec.sum())})")
             published[:, rec] = pub[:n_draws]
             checks["rerun_vs_published_max_abs_diff"].append(
                 float(np.max(np.abs(pub[:n_draws] - cells["microimpute"][:, rec]))))

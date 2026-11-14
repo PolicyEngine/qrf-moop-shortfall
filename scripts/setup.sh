@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# Build the pinned environment for the harness:
+# Build the harness's environment:
 #   .venv/              Python 3.13.13, requirements.lock.txt, microimpute editable
 #   microimpute/        microimpute main at e4cbe02 (the experiment's code)
 #   microimpute-pr219/  PR 219's head, 296e47d (harness/pr219.py imports it)
+# It pins Python, the runtime dependencies and both commits. uv itself and the
+# editable install's build tools (setuptools>=61.0, wheel) stay unpinned.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -12,6 +14,14 @@ PR219=296e47dc1d49b8f8be940dd915a24efc2a7b091d
 if [ ! -d microimpute/.git ]; then
   git clone --quiet https://github.com/PolicyEngine/microimpute.git microimpute
 fi
+# Refuse an existing checkout with uncommitted changes to tracked files, so a
+# rerun never carries them along or discards them.
+for repo in microimpute microimpute-pr219; do
+  if [ -e "$repo/.git" ] && [ -n "$(git -C "$repo" status --porcelain --untracked-files=no)" ]; then
+    echo "setup.sh: $repo has uncommitted changes; commit or move them, then rerun" >&2
+    exit 1
+  fi
+done
 if ! git -C microimpute cat-file -e "$MAIN^{commit}" 2>/dev/null \
    || ! git -C microimpute cat-file -e "$PR219^{commit}" 2>/dev/null; then
   git -C microimpute fetch --quiet origin "$MAIN" "$PR219"

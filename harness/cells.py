@@ -76,9 +76,11 @@ def honest_mean(
     are routed through its trees and fill the leaves. A tree whose leaf for a
     recipient holds no donor from the filling half is skipped for that
     recipient. The two halves' tree-averaged leaf means are averaged. With
-    ``survey_weight``, leaf means are survey-weighted. Because the partition
-    never sees the filling half's targets, a donor's weight in the
-    recipients' means cannot depend on its own noise draw.
+    ``survey_weight``, leaf means are survey-weighted. The partition never
+    sees the filling half's targets, so the splits can't tie a donor's
+    weight in the recipients' means to its own noise draw. Survey weights
+    still can: in the informative synthetic design, inclusion depends on
+    each unit's noise (``synth.py``), so the weights carry it.
     """
     y = np.asarray(y, dtype=np.float64)
     rng = np.random.default_rng([seed, 31])

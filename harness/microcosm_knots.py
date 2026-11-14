@@ -15,8 +15,11 @@ row:
 
 - the pool mean, which must match ``predict(quantiles="mean")``;
 - the exact type-7 expectation (``qrfdecomp.type7_integral``);
-- the 203-knot expectation from the pool, which must match
-  ``predict(quantiles=knots)`` weighted by ``qrfdecomp.interp_weights``.
+- the 203-knot expectation from the pool, which must match the same
+  expectation from ``predict(quantiles=knots)``, both integrated with
+  ``qrfdecomp.interp_weights`` before the comparison.
+
+``pool_size_median`` records each fold's median pool size.
 
 Each total weights the amount by the gate's positive probability and the
 recipient's weight, as ``cells.py`` does, and must reproduce
@@ -96,6 +99,8 @@ def analyse_fold(X_donor, y_donor, w_donor, X_rec, w_rec, *, seed, knots):
         pools = stored_pools(forest, Xrc)
         mean = pools.mean()
         type7 = qd.type7_integral(pools)
+        # Integrated knot expectations, one per row: the check below compares
+        # these, not the 203 knots one by one.
         knots_pool = pools.quantiles(knots, "linear") @ iw
         mean_predict = np.asarray(forest.predict(Xrc, quantiles="mean"), dtype=np.float64)
         knots_predict = np.asarray(forest.predict(Xrc, quantiles=list(knots))) @ iw
