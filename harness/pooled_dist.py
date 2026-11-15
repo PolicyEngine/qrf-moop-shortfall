@@ -86,10 +86,9 @@ def main_folds(QRF, X, moop, fold_of, weight, seed0, n_draws, log):
     import qrfdecomp as qd
 
     cps = {r["fold"]: r for r in json.loads((ROOT / "results" / "cps.json").read_text())}
-    from cps import CACHE, cached_run
+    from cps import cached_draws, cached_run
 
     run = cached_run(n_draws)
-    tag = run["tag"]
     n = len(moop)
     cells = {k: np.full((n_draws, n), np.nan) for k in (
         "microimpute", "type7_exact", "type1_exact", "leafall_type1_exact")}
@@ -123,15 +122,11 @@ def main_folds(QRF, X, moop, fold_of, weight, seed0, n_draws, log):
             cells["type7_exact"][d, rec] = p1.quantile(u, "linear")
             cells["type1_exact"][d, rec] = p1.quantile(u, "inverted_cdf")
             cells["leafall_type1_exact"][d, rec] = pn.quantile(u, "inverted_cdf")
-        path = CACHE / f"{tag}_fold{fold}.npz"
-        if path.exists():
-            pub = np.load(path, allow_pickle=False)["qrf"]
-            if pub.shape[0] < n_draws or pub.shape[1] != int(rec.sum()):
-                raise ValueError(f"{path} holds draws of shape {pub.shape}, "
-                                 f"need at least ({n_draws}, {int(rec.sum())})")
-            published[:, rec] = pub[:n_draws]
+        pub = cached_draws(run, fold, int(rec.sum()), n_draws)
+        if pub is not None:
+            published[:, rec] = pub
             checks["rerun_vs_published_max_abs_diff"].append(
-                float(np.max(np.abs(pub[:n_draws] - cells["microimpute"][:, rec]))))
+                float(np.max(np.abs(pub - cells["microimpute"][:, rec]))))
         else:
             have_published = False
         log(f"fold {fold} done in {time.time() - t0:.0f}s")

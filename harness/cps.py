@@ -56,21 +56,42 @@ def cached_run(n_draws: int) -> dict:
     The experiment's cache key covers its environment, microimpute's installed
     version included, so a fresh run caches its draws under a new tag and
     records it in the results.json beside CACHE. Without that file, the
-    harness reads the published run's tag. A fresh run must share the
+    harness reads the published run's tag. Either run must share the
     published run's seed and folds and hold at least ``n_draws`` draws per
     fold; otherwise its draws answer a different question, and this raises.
-    Returns the run's source, tag, seed, folds and draws, which the callers
-    record in their output.
+    Callers compare the first ``n_draws`` cached draws of each fold (see
+    ``cached_draws``). Returns the run's source, tag, seed, folds and draws,
+    which the callers record in their output.
     """
     results = CACHE.parent / "results.json"
-    if not results.exists():
-        return dict(PUBLISHED_RUN)
-    config = json.loads(results.read_text())["config"]
-    run = {"source": "fresh run (results.json beside the cache)",
-           **{k: config[k] for k in ("tag", "seed", "folds", "draws")}}
+    if results.exists():
+        config = json.loads(results.read_text())["config"]
+        run = {"source": "fresh run (results.json beside the cache)",
+               **{k: config[k] for k in ("tag", "seed", "folds", "draws")}}
+    else:
+        run = dict(PUBLISHED_RUN)
     if (run["seed"], run["folds"]) != (SEED, 5) or run["draws"] < n_draws:
-        raise ValueError(f"{results} describes a run unlike the published one: {run}")
+        raise ValueError(f"the experiment run doesn't match the harness "
+                         f"({n_draws} draws, seed {SEED}, 5 folds): {run}")
     return run
+
+
+def cached_draws(run: dict, fold: int, n_rec: int, n_draws: int) -> np.ndarray | None:
+    """The first ``n_draws`` cached draws of ``run`` for one fold, or None.
+
+    The cached array must hold the run's own draw count for the fold's
+    ``n_rec`` recipients; anything else means the file doesn't belong to
+    ``run``, and this raises.
+    """
+    path = CACHE / f"{run['tag']}_fold{fold}.npz"
+    if not path.exists():
+        return None
+    draws = np.load(path, allow_pickle=False)["qrf"]
+    if draws.shape != (run["draws"], n_rec):
+        raise ValueError(f"{path} holds draws of shape {draws.shape}, "
+                         f"expected ({run['draws']}, {n_rec})")
+    return draws[:n_draws]
+
 
 
 def main() -> None:
@@ -92,7 +113,6 @@ def main() -> None:
     print(f"{len(units)} units, folds {np.bincount(folds).tolist()}, "
           f"reported total ${(moop * weight).sum() / 1e9:.1f}B", flush=True)
     run = cached_run(args.draws)
-    tag = run["tag"]
     print(f"experiment run {run}", flush=True)
 
     results = json.loads(args.out.read_text()) if args.out.exists() else []
@@ -114,11 +134,8 @@ def main() -> None:
             n_draws=args.draws,
         )
         first = out.pop("microimpute_draws_first")
-        cached = CACHE / f"{tag}_fold{fold}.npz"
-        if cached.exists():
-            published = np.load(cached, allow_pickle=False)["qrf"]
-            if published.shape != (run["draws"], int(rec.sum())):
-                raise ValueError(f"{cached} holds draws of shape {published.shape}")
+        published = cached_draws(run, fold, int(rec.sum()), args.draws)
+        if published is not None:
             out["experiment_run"] = run
             out["published_first_draw_max_abs_diff"] = float(
                 np.max(np.abs(published[0] - first))

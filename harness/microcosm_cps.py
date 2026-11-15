@@ -1,4 +1,4 @@
-"""Same-tree selection test of Microcosm's amount forest on CPS MOOP.
+"""Same-tree adaptive-minus-honest contrast of Microcosm's amount forest on CPS MOOP.
 
 On the synthetic process Microcosm's amount forest carries about +11
 points of selection (``microcosm_actual.py``). CPS has no known
@@ -15,8 +15,12 @@ comparison is. For each fold this:
    its survey weight (honest); averaged over the two halves.
 
 Every total weights each recipient's amount by the fitted gate's positive
-probability, the same in both fills, so adaptive minus honest isolates
-what the splits' sight of the donors' own values does to the total.
+probability, the same in both fills, so the gate drops out of adaptive
+minus honest. That difference remains a total contrast, not a measure of
+selection: the two fills hold different donors and masses, so they smooth
+differently (on the synthetic process the contrast for Microcosm-style
+trees carries -0.33 points of smoothing beside +10.05 of selection), and
+the honest fill can leave a recipient's leaf empty in a tree.
 
 Usage:
   python microcosm_cps.py --out results/microcosm_cps.json

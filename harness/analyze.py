@@ -177,6 +177,17 @@ DIST_CELLS = [
 ]
 
 
+def cache_label(run):
+    """Name the cached comparator by the run cps.cached_run recorded.
+
+    Results saved before the harness recorded the run came from the
+    published run.
+    """
+    if run is None or run["source"].startswith("published"):
+        return "published draws"
+    return f"cached experiment draws (tag {run['tag']})"
+
+
 def dist_table(results: list[dict], truth_stats_key) -> str:
     """Realized-draw statistics per cell: the mean over splits of each split's % gap.
 
@@ -194,7 +205,8 @@ def dist_table(results: list[dict], truth_stats_key) -> str:
         lines.append(f"| {label} | " + " | ".join(vals) + " |")
 
     if "published_realized" in results[0]:
-        row("published draws (cache)", lambda r: r["published_realized"])
+        row(f"{cache_label(results[0].get('experiment_run'))} (cache)",
+            lambda r: r["published_realized"])
     row("microimpute draws (rerun)", lambda r: r["microimpute_realized"])
     for key, label in DIST_CELLS:
         forest, leaf, mech = key.split("/")
@@ -246,7 +258,8 @@ def main() -> None:
         print(validation(cps), "\n")
         for r in cps:
             print(f"fold {r['fold']}: replay diff {r['replay_max_abs_diff']:.2e}, "
-                  f"published first-draw diff {r.get('published_first_draw_max_abs_diff')}")
+                  f"{cache_label(r.get('experiment_run'))} first-draw diff "
+                  f"{r.get('published_first_draw_max_abs_diff')}")
     for design in ("informative", "x_only"):
         path = res / f"synth_{design}.json"
         if not path.exists():

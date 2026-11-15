@@ -463,8 +463,18 @@ def mk_table(mk, cps):
     return "\n".join(lines)
 
 
+def cache_label(run):
+    """Name the cached comparator by the run cps.cached_run recorded.
+
+    Results saved before the harness recorded the run came from the
+    published run.
+    """
+    if run is None or run["source"].startswith("published"):
+        return "published draws"
+    return f"cached experiment draws (tag {run['tag']})"
+
+
 PD_LABEL = {
-    "published": "microimpute as run (published draws)",
     "microimpute": "microimpute's predict, rerun",
     "type7_exact": "exact u, linear quantile (one sample per leaf)",
     "type1_exact": "exact u, inverse ECDF (one sample per leaf)",
@@ -488,7 +498,9 @@ def pd_table(*runs):
             continue
         for name, st in run["cells"].items():
             vals = [f"{pct(st[s], rep[s]):+.1f}" for s in stats]
-            lines.append(f"| {PD_LABEL.get(name, name)} | " + " | ".join(vals)
+            label = (f"microimpute as run ({cache_label(run['checks'].get('experiment_run'))})"
+                     if name == "published" else PD_LABEL.get(name, name))
+            lines.append(f"| {label} | " + " | ".join(vals)
                          + f" | {100 * st['share_zero']:.2f}% |")
         checks.append(f"{run['code']}: {json.dumps(run['checks'])}")
     lines.append("")
