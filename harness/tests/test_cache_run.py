@@ -76,3 +76,36 @@ def test_cached_draws_rejects_a_file_unlike_its_run(cache, shape):
     np.savez(cache / "fresh_fold0.npz", qrf=np.zeros(shape))
     with pytest.raises(ValueError):
         cps.cached_draws(run, 0, 7, 10)
+
+
+def _fold(fold, run=None, cached=True):
+    r = {"fold": fold}
+    if cached:
+        r["published_realized"] = {}
+    if run is not None:
+        r["experiment_run"] = run
+    return r
+
+
+@pytest.mark.parametrize("results", [
+    [_fold(0), _fold(1, cached=False)],                    # a fold lacks the comparison
+    [_fold(0, cached=False), _fold(1)],                    # ... even fold 0
+    [_fold(0), _fold(1, run={**cps.PUBLISHED_RUN, "tag": "fresh",
+                             "source": "fresh run (results.json beside the cache)"})],
+])
+def test_distribution_table_refuses_mixed_cache_comparisons(results):
+    """analyze.dist_table labels the cache row by one run, so every fold must share it."""
+    import analyze
+
+    with pytest.raises(ValueError):
+        analyze.dist_table(results, lambda r: {})
+
+
+def test_published_run_shares_one_key_recorded_or_not():
+    """Folds saved before the harness recorded the run used the published run."""
+    import analyze
+
+    fresh = {**cps.PUBLISHED_RUN, "tag": "fresh",
+             "source": "fresh run (results.json beside the cache)"}
+    assert analyze.cache_run_key(None) == analyze.cache_run_key(cps.PUBLISHED_RUN)
+    assert analyze.cache_run_key(fresh) != analyze.cache_run_key(cps.PUBLISHED_RUN)

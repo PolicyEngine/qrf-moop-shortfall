@@ -116,6 +116,12 @@ def main() -> None:
     print(f"experiment run {run}", flush=True)
 
     results = json.loads(args.out.read_text()) if args.out.exists() else []
+    # Resuming must not mix experiment runs across folds. Folds saved before
+    # the harness recorded the run compared with the published run.
+    for r in results:
+        if "published_realized" in r and r.get("experiment_run", PUBLISHED_RUN) != run:
+            raise ValueError(f"{args.out} holds fold {r['fold']} compared with another "
+                             f"experiment run; write to a new file")
     done = {r["fold"] for r in results}
     for fold in args.folds:
         if fold in done:

@@ -188,6 +188,13 @@ def cache_label(run):
     return f"cached experiment draws (tag {run['tag']})"
 
 
+def cache_run_key(run):
+    """One key per experiment run, the published run under one key whether recorded or not."""
+    if run is None or run["source"].startswith("published"):
+        return "published"
+    return json.dumps(run, sort_keys=True)
+
+
 def dist_table(results: list[dict], truth_stats_key) -> str:
     """Realized-draw statistics per cell: the mean over splits of each split's % gap.
 
@@ -204,7 +211,12 @@ def dist_table(results: list[dict], truth_stats_key) -> str:
             vals.append(f"{np.mean(v):+.1f}")
         lines.append(f"| {label} | " + " | ".join(vals) + " |")
 
-    if "published_realized" in results[0]:
+    cached = ["published_realized" in r for r in results]
+    if any(cached):
+        if not all(cached):
+            raise ValueError("some folds lack the cached experiment comparison")
+        if len({cache_run_key(r.get("experiment_run")) for r in results}) > 1:
+            raise ValueError("folds compare with different experiment runs")
         row(f"{cache_label(results[0].get('experiment_run'))} (cache)",
             lambda r: r["published_realized"])
     row("microimpute draws (rerun)", lambda r: r["microimpute_realized"])

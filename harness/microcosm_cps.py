@@ -18,8 +18,9 @@ Every total weights each recipient's amount by the fitted gate's positive
 probability, the same in both fills, so the gate drops out of adaptive
 minus honest. That difference remains a total contrast, not a measure of
 selection: the two fills hold different donors and masses, so they smooth
-differently (on the synthetic process the contrast for Microcosm-style
-trees carries -0.33 points of smoothing beside +10.05 of selection), and
+differently (in the informative synthetic design the contrast for
+Microcosm-style trees carries -0.33 points of smoothing beside +10.05 of
+selection), and
 the honest fill can leave a recipient's leaf empty in a tree.
 
 Usage:
